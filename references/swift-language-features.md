@@ -737,6 +737,379 @@ class UIManager {
 }
 ```
 
+## Swift 6 Comprehensive Updates
+
+### Data-Race Safety (Swift 6.0+)
+
+**Documentation:** [Announcing Swift 6](https://www.swift.org/blog/announcing-swift-6/)
+
+Swift 6's defining feature is compile-time data-race safety. The Swift 6 language mode diagnoses potential data races as compiler errors.
+
+#### Enabling Swift 6 Mode
+
+```swift
+// In Package.swift
+let package = Package(
+    name: "MyPackage",
+    platforms: [.macOS(.v14), .iOS(.v17)],
+    products: [
+        .library(name: "MyLibrary", targets: ["MyLibrary"])
+    ],
+    targets: [
+        .target(
+            name: "MyLibrary",
+            swiftSettings: [
+                .enableUpcomingFeature("StrictConcurrency")
+            ]
+        )
+    ]
+)
+
+// Or per-file
+// swift-tools-version: 6.0
+```
+
+#### Sendable Protocol
+
+Types that can be safely transferred across concurrency domains:
+
+```swift
+// ✅ Value types are implicitly Sendable
+struct User: Sendable {
+    let id: UUID
+    let name: String
+}
+
+// ✅ Actors are always Sendable
+actor DatabaseManager: Sendable {
+    private var cache: [String: Data] = [:]
+}
+
+// ❌ Classes must be explicitly marked and meet requirements
+class ViewModel: Sendable {  // Error: class must be final and immutable
+    var state: String  // Error: mutable state
+}
+
+// ✅ Correct: final class with immutable or synchronized state
+final class ViewModel: Sendable {
+    let id: UUID
+    private let state = Atomic<String>("")  // Synchronized
+}
+
+// ✅ @unchecked Sendable when you guarantee thread-safety
+final class ThreadSafeCache: @unchecked Sendable {
+    private let lock = NSLock()
+    private var storage: [String: Any] = [:]
+
+    func get(_ key: String) -> Any? {
+        lock.lock()
+        defer { lock.unlock() }
+        return storage[key]
+    }
+}
+```
+
+#### Improved Sendable Inference
+
+Swift 6 automatically infers Sendable conformance:
+
+```swift
+// Automatically Sendable
+struct Point {
+    let x: Double
+    let y: Double
+}
+
+// Automatically Sendable
+enum Result {
+    case success(Int)
+    case failure(Error)
+}
+
+// NOT Sendable (contains class reference)
+struct Container {
+    let manager: NSObject  // Not Sendable
+}
+```
+
+#### Data Isolation
+
+```swift
+@MainActor
+class ViewModel: ObservableObject {
+    @Published var items: [Item] = []  // Isolated to main actor
+
+    func loadItems() async {
+        // Already on main actor
+        let newItems = await fetchItems()  // Off main actor
+        items = newItems  // Back on main actor - safe
+    }
+}
+
+// Compile error: data race detected
+class DataManager {
+    var cache: [String: Data] = [:]  // Error: not safe across actors
+
+    func store(_ data: Data, key: String) async {
+        cache[key] = data  // Error: race condition
+    }
+}
+
+// ✅ Fixed with actor
+actor DataManager {
+    private var cache: [String: Data] = [:]
+
+    func store(_ data: Data, key: String) {
+        cache[key] = data  // Safe: actor-isolated
+    }
+}
+```
+
+### Typed Throws (Swift 6.0+)
+
+**Documentation:** [Swift 6 Announcement](https://www.swift.org/blog/announcing-swift-6/)
+
+Functions can now specify the exact error type they throw:
+
+```swift
+enum NetworkError: Error {
+    case invalidURL
+    case timeout
+    case serverError(Int)
+}
+
+// Typed throws
+func fetchData(from url: String) throws(NetworkError) -> Data {
+    guard URL(string: url) != nil else {
+        throw .invalidURL
+    }
+
+    // Implementation
+    return Data()
+}
+
+// Caller knows exact error type
+do {
+    let data = try fetchData(from: "https://api.example.com")
+} catch .invalidURL {
+    print("Invalid URL")
+} catch .timeout {
+    print("Request timed out")
+} catch .serverError(let code) {
+    print("Server error: \(code)")
+}
+// No need for default case - compiler knows all cases
+
+// Can still use untyped throws
+func oldStyleFunction() throws -> String {
+    throw NSError(domain: "test", code: 1)
+}
+```
+
+### Single-Threaded by Default (Swift 6.2+)
+
+**Documentation:** [Swift 6.2 Released](https://www.swift.org/blog/swift-6.2-released/)
+
+Swift 6.2 introduces default main actor isolation:
+
+```swift
+// Before Swift 6.2 - must annotate
+@MainActor
+class ViewModel: ObservableObject {
+    @Published var data: [Item] = []
+}
+
+// Swift 6.2 - default main actor isolation
+class ViewModel: ObservableObject {  // Implicitly @MainActor
+    @Published var data: [Item] = []  // Safe without annotation
+}
+
+// Opt out with nonisolated
+class BackgroundProcessor {
+    nonisolated func processInBackground() async {
+        // Runs off main actor
+        await heavyComputation()
+    }
+
+    func updateUI() {
+        // Runs on main actor by default
+    }
+}
+```
+
+### Observable Async Sequences (Swift 6.2+)
+
+**Documentation:** [Swift 6.2 Released](https://www.swift.org/blog/swift-6.2-released/)
+
+Stream state changes from observable types:
+
+```swift
+import Observation
+
+@Observable
+class DataModel {
+    var count: Int = 0
+    var name: String = ""
+}
+
+// Stream changes
+func observeChanges() async {
+    let model = DataModel()
+
+    for await transaction in model.changes {
+        print("Changed properties:", transaction.changedProperties)
+
+        if transaction.changedProperties.contains(\.count) {
+            print("Count changed to: \(model.count)")
+        }
+    }
+}
+
+// Use with SwiftUI
+struct ObservingView: View {
+    @State private var model = DataModel()
+
+    var body: some View {
+        VStack {
+            Text("Count: \(model.count)")
+
+            Button("Increment") {
+                model.count += 1
+            }
+        }
+        .task {
+            for await _ in model.changes {
+                // React to any change
+                print("Model updated")
+            }
+        }
+    }
+}
+```
+
+### Embedded Swift (Swift 6.0+)
+
+**Documentation:** [Swift 6 Announcement](https://www.swift.org/blog/announcing-swift-6/)
+
+Subset for embedded systems and microcontrollers:
+
+```swift
+// Embedded Swift restrictions:
+// - No runtime reflection
+// - No automatic memory management
+// - Manual memory layout control
+// - Optimized for size and determinism
+
+@_embedded
+struct SensorData {
+    var temperature: Float
+    var humidity: Float
+    var timestamp: UInt32
+}
+
+// Use in embedded context
+func processSensor() {
+    var data = SensorData(
+        temperature: 25.0,
+        humidity: 60.0,
+        timestamp: 12345
+    )
+
+    // Direct memory access
+    withUnsafeBytes(of: &data) { bytes in
+        // Send over serial, I2C, etc.
+    }
+}
+```
+
+### 128-bit Integer Support (Swift 6.0+)
+
+**Documentation:** [Swift 6 Announcement](https://www.swift.org/blog/announcing-swift-6/)
+
+```swift
+let largeNumber: Int128 = 170_141_183_460_469_231_731_687_303_715_884_105_727
+let unsigned: UInt128 = 340_282_366_920_938_463_463_374_607_431_768_211_455
+
+// Use for:
+// - Cryptographic operations
+// - High-precision mathematics
+// - Large integer calculations
+
+func calculateFactorial(_ n: Int) -> Int128 {
+    guard n > 0 else { return 1 }
+    return Int128(n) * calculateFactorial(n - 1)
+}
+
+let result = calculateFactorial(34)  // Needs 128 bits
+```
+
+### Migration Guide
+
+#### Swift 5 → Swift 6
+
+```swift
+// Swift 5 code
+class DataManager {
+    var cache: [String: Data] = [:]
+
+    func fetch(_ key: String) async -> Data? {
+        cache[key]  // Compiles but unsafe
+    }
+}
+
+// Swift 6 migration
+actor DataManager {  // Use actor for isolation
+    private var cache: [String: Data] = [:]
+
+    func fetch(_ key: String) -> Data? {
+        cache[key]  // Safe: actor-isolated
+    }
+}
+
+// Or use Sendable + Mutex
+final class DataManager: Sendable {
+    private let cache = Mutex<[String: Data]>([:])
+
+    func fetch(_ key: String) -> Data? {
+        cache.withLock { $0[key] }
+    }
+}
+```
+
+#### Gradual Adoption
+
+```swift
+// Use @preconcurrency for gradual migration
+@preconcurrency import LegacyFramework
+
+// Mark legacy types
+extension LegacyClass: @unchecked Sendable {}
+
+// Suppress warnings during transition
+#if compiler(>=6.0)
+@preconcurrency protocol LegacyProtocol {
+    func oldMethod()
+}
+#else
+protocol LegacyProtocol {
+    func oldMethod()
+}
+#endif
+```
+
+## Swift 6 Best Practices
+
+1. **Enable strict concurrency**: Catch data races at compile time
+2. **Use actors**: For shared mutable state
+3. **Mark Sendable**: Be explicit about thread-safe types
+4. **Typed throws**: Specify error types for better error handling
+5. **Default main actor**: Rely on Swift 6.2's default isolation
+6. **Test thoroughly**: Concurrency bugs are subtle
+7. **Gradual migration**: Use @preconcurrency during transition
+8. **Read compiler errors**: Swift 6 errors guide you to safety
+9. **Use Synchronization**: For low-level primitives (see swift-synchronization.md)
+10. **Profile performance**: Actors have overhead, benchmark critical paths
+
 ## Best Practices Summary
 
 1. **Use value types**: Prefer structs over classes when possible

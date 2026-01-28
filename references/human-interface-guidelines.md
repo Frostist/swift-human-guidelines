@@ -17,6 +17,110 @@
 - **Realistic motion**: Physics-based animations feel natural
 - **Spatial relationships**: Maintain consistent spatial model across platforms
 
+## Liquid Glass Design System (iOS 26+)
+
+**Available:** iOS 26.0+, iPadOS 26.0+, macOS Tahoe+, visionOS 26+
+**Documentation:** [WWDC25 Platform State of the Union](https://developer.apple.com/videos/play/wwdc2025/102/)
+
+iOS 26 introduces Liquid Glass, a new dynamic material that combines optical properties of glass with fluid motion. This design system defines the visual language for the next decade of Apple platforms.
+
+### Visual Properties
+
+- **Refraction**: Content below glass material refracts and distorts subtly
+- **Reflection**: Environmental light reflects off glass surfaces
+- **Lensing effects**: Edges have chromatic aberration and depth
+- **Fluidity**: Materials animate fluidly, not rigidly
+- **Transparency**: Varies based on content and context
+
+### When to Use Liquid Glass
+
+**✅ Good use cases:**
+- Navigation bars and tab bars
+- Sheets and panels that overlay content
+- Control center and notification center
+- Overlays that need to show context
+- Cards floating above background content
+
+**❌ Avoid for:**
+- Primary content areas
+- Text-heavy interfaces (reduces legibility)
+- Buttons and interactive elements (use solid colors)
+- When accessibility Reduce Transparency is enabled
+
+### SwiftUI Implementation
+
+```swift
+import SwiftUI
+
+// Basic liquid glass material
+struct ContentView: View {
+    var body: some View {
+        ZStack {
+            BackgroundView()
+
+            VStack {
+                Text("Floating Panel")
+                    .font(.title)
+            }
+            .padding()
+            .background(.liquidGlass)  // New material
+            .cornerRadius(20)
+        }
+    }
+}
+
+// Configuring glass properties
+.background(.liquidGlass(
+    intensity: .standard,  // .subtle, .standard, .prominent
+    tint: .blue
+))
+
+// Respecting accessibility
+.background(
+    reducedTransparency ?
+        .regularMaterial :
+        .liquidGlass
+)
+```
+
+### Design Guidelines
+
+**Intensity Levels:**
+- **Subtle**: Minimal refraction, high legibility
+- **Standard**: Balanced, for most use cases
+- **Prominent**: Maximum effect, use sparingly
+
+**Layering:**
+- Use Liquid Glass for 1-2 layers maximum
+- Don't stack multiple glass materials
+- Maintain sufficient contrast with content
+
+**Accessibility:**
+- Always provide fallback to `.regularMaterial` when Reduce Transparency enabled
+- Ensure text meets WCAG AA contrast (4.5:1)
+- Test with Increase Contrast setting
+
+### Animation Best Practices
+
+```swift
+struct AnimatedGlassView: View {
+    @State private var isExpanded = false
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: isExpanded ? 40 : 20)
+            .fill(.liquidGlass)
+            .frame(
+                width: isExpanded ? 300 : 200,
+                height: isExpanded ? 400 : 200
+            )
+            .animation(.smooth(duration: 0.5), value: isExpanded)
+            .onTapGesture {
+                isExpanded.toggle()
+            }
+    }
+}
+```
+
 ## Platform-Specific Guidelines
 
 ### iOS & iPadOS

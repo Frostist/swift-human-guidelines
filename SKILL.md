@@ -1,6 +1,6 @@
 ---
 name: swift-human-guidelines
-description: Comprehensive Swift and SwiftUI development guidelines for building iOS, iPadOS, macOS, watchOS, and tvOS applications. Use when building new Apple platform apps from scratch, optimizing performance, implementing SwiftUI best practices, following Apple Human Interface Guidelines, or creating cross-platform Swift applications. Triggers on tasks involving Swift code, SwiftUI views, Xcode projects, app architecture, performance optimization, or Apple platform development.
+description: Comprehensive Swift 6 and SwiftUI development guidelines for building iOS 26, iOS 18, iPadOS, macOS, watchOS, visionOS, and tvOS applications. Covers Foundation Models API, BGContinuedProcessingTask, Call Translation API, Liquid Glass design system, data-race safety, typed throws, synchronization primitives, SwiftUI/UIKit interoperability, zoom transitions, and document-based apps. Use when building new Apple platform apps, implementing Apple Intelligence features, optimizing performance with Swift 6 concurrency, following Apple Human Interface Guidelines, creating cross-platform applications, or working with iOS 26/18 APIs. Triggers on Swift code, SwiftUI views, Xcode projects, app architecture, background processing, translation features, Foundation Models, synchronization, actors, Sendable types, or modern Apple platform development.
 ---
 
 # Swift and SwiftUI Development Guidelines
@@ -244,14 +244,15 @@ This skill includes comprehensive reference documentation:
 ### references/human-interface-guidelines.md
 Complete Apple HIG coverage:
 - Core principles (Clarity, Deference, Depth)
-- Platform-specific guidelines (iOS, macOS, watchOS, tvOS)
+- **Liquid Glass design system (iOS 26+)**
+- Platform-specific guidelines (iOS, macOS, watchOS, tvOS, visionOS)
 - Typography and Dynamic Type
 - Color and Dark Mode
 - Accessibility (VoiceOver, Dynamic Type, Reduce Motion)
 - App architecture and settings patterns
 - System integration features
 
-**When to read:** Designing UI, ensuring HIG compliance, implementing accessibility, choosing navigation patterns
+**When to read:** Designing UI, ensuring HIG compliance, implementing Liquid Glass materials, choosing navigation patterns
 
 ### references/swiftui-best-practices.md
 Modern SwiftUI patterns:
@@ -263,8 +264,12 @@ Modern SwiftUI patterns:
 - Custom modifiers and styling
 - Testing strategies
 - Common patterns (loading states, search, pull-to-refresh)
+- **iOS 18: SwiftUI/UIKit animation interoperability**
+- **iOS 18: Zoom transitions and unified gestures**
+- **iOS 26: UIKit/SwiftUI scene mixing**
+- **iOS 18: DocumentGroupLaunchScene**
 
-**When to read:** Architecting new features, implementing state management, creating reusable components, setting up navigation
+**When to read:** Architecting new features, implementing state management, using iOS 18/26 APIs, creating reusable components
 
 ### references/performance-optimization.md
 Performance techniques:
@@ -287,7 +292,58 @@ Modern Swift features:
 - Optionals and collections
 - Protocols and generics
 - Memory management (ARC, weak/unowned)
-- Swift 6 features (typed throws, noncopyable types)
+- **Swift 6: Data-race safety and Sendable protocol**
+- **Swift 6: Typed throws**
+- **Swift 6.2: Single-threaded by default (implicit @MainActor)**
+- **Swift 6.2: Observable async sequences**
+- **Swift 6: Embedded Swift subset**
+- **Swift 6: 128-bit integer support**
+
+**When to read:** Using Swift 6 features, implementing concurrency, ensuring data-race safety, migrating to Swift 6
+
+### references/foundation-models-api.md
+Apple Intelligence integration (iOS 26+):
+- Foundation Models framework overview
+- Text summarization APIs
+- Text extraction and entity recognition
+- Content classification
+- On-device processing
+- Performance optimization
+- Privacy considerations
+
+**When to read:** Implementing Apple Intelligence features, adding summarization, extracting information from text
+
+### references/background-processing-ios26.md
+Advanced background execution (iOS 26+):
+- BGContinuedProcessingTask API
+- Background GPU access
+- Task continuation patterns
+- System limits and best practices
+- Handling expiration
+- Resource management
+
+**When to read:** Implementing background processing, finishing user-initiated tasks, using GPU in background
+
+### references/call-translation-api.md
+Real-time translation (iOS 26+):
+- Call Translation API overview
+- Live audio translation
+- Supported language pairs
+- Streaming translation
+- Privacy and permissions
+- Performance optimization
+
+**When to read:** Implementing translation features, building communication apps, adding multilingual support
+
+### references/swift-synchronization.md
+Low-level concurrency primitives (Swift 6+):
+- Atomic operations
+- Mutex API
+- Lock-free data structures
+- Memory ordering semantics
+- Integration with Swift concurrency
+
+**When to read:** Implementing thread-safe primitives, building custom synchronization, optimizing performance-critical code
 
 **When to read:** Using modern Swift features, implementing concurrency, managing memory, working with generics
 

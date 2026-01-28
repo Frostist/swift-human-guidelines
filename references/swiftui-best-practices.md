@@ -763,6 +763,285 @@ struct ContentView: View {
 }
 ```
 
+## iOS 18 & 26 Features
+
+### SwiftUI/UIKit Animation Interoperability (iOS 18+)
+
+**Documentation:** [What's new in SwiftUI - WWDC24](https://developer.apple.com/videos/play/wwdc2024/10144/)
+
+You can now use SwiftUI Animation types to animate UIKit and AppKit views:
+
+```swift
+import SwiftUI
+import UIKit
+
+class ViewController: UIViewController {
+    let animatableView = UIView()
+
+    func animateWithSwiftUI() {
+        // Use SwiftUI animation on UIKit view
+        UIView.animate(.spring(duration: 0.5)) {
+            self.animatableView.center = CGPoint(x: 200, y: 200)
+            self.animatableView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+        }
+    }
+
+    func animateWithCustomSpring() {
+        // Custom spring parameters
+        UIView.animate(.spring(duration: 0.8, bounce: 0.3)) {
+            self.animatableView.alpha = 0.5
+        }
+    }
+}
+
+// In SwiftUI, wrap UIKit views with consistent animations
+struct HybridView: View {
+    @State private var scale: CGFloat = 1.0
+
+    var body: some View {
+        VStack {
+            // SwiftUI view
+            Circle()
+                .fill(.blue)
+                .scaleEffect(scale)
+
+            // UIKit view with matching animation
+            UIKitWrapper()
+                .scaleEffect(scale)
+
+            Button("Animate") {
+                withAnimation(.spring(duration: 0.5)) {
+                    scale = scale == 1.0 ? 1.5 : 1.0
+                }
+            }
+        }
+    }
+}
+
+struct UIKitWrapper: UIViewRepresentable {
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        view.backgroundColor = .systemBlue
+        return view
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {}
+}
+```
+
+### Zoom Transition (iOS 18+)
+
+**Documentation:** [What's new in UIKit - WWDC24](https://developer.apple.com/videos/play/wwdc2024/10118/)
+
+New continuously interactive zoom transition for navigation and presentations:
+
+```swift
+struct ImageGalleryView: View {
+    let images: [GalleryImage]
+    @Namespace private var animation
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))]) {
+                    ForEach(images) { image in
+                        NavigationLink(value: image) {
+                            Image(image.name)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 150, height: 150)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .matchedGeometryEffect(
+                                    id: image.id,
+                                    in: animation
+                                )
+                        }
+                    }
+                }
+            }
+            .navigationDestination(for: GalleryImage.self) { image in
+                ImageDetailView(image: image)
+                    .navigationTransition(.zoom(
+                        sourceID: image.id,
+                        in: animation
+                    ))
+            }
+        }
+    }
+}
+
+struct ImageDetailView: View {
+    let image: GalleryImage
+    @Namespace private var animation
+
+    var body: some View {
+        GeometryReader { geometry in
+            Image(image.name)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .matchedGeometryEffect(
+                    id: image.id,
+                    in: animation
+                )
+                // Supports interactive drag-to-dismiss
+        }
+        .ignoresSafeArea()
+    }
+}
+```
+
+### Unified Gesture System (iOS 18+)
+
+**Documentation:** [What's new in SwiftUI - WWDC24](https://developer.apple.com/videos/play/wwdc2024/10144/)
+
+Specify dependencies between gestures across SwiftUI and UIKit:
+
+```swift
+struct GesturePriorityView: View {
+    @State private var dragOffset: CGSize = .zero
+    @State private var scale: CGFloat = 1.0
+
+    var body: some View {
+        Rectangle()
+            .fill(.blue)
+            .frame(width: 200, height: 200)
+            .scaleEffect(scale)
+            .offset(dragOffset)
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+                        dragOffset = value.translation
+                    }
+            )
+            .simultaneousGesture(
+                MagnificationGesture()
+                    .onChanged { value in
+                        scale = value
+                    }
+            )
+    }
+}
+
+// Gesture dependencies
+struct DependentGesturesView: View {
+    @State private var isPressing = false
+    @State private var dragOffset: CGSize = .zero
+
+    var body: some View {
+        Circle()
+            .fill(isPressing ? .red : .blue)
+            .frame(width: 100, height: 100)
+            .offset(dragOffset)
+            .gesture(
+                LongPressGesture()
+                    .onChanged { _ in isPressing = true }
+                    .onEnded { _ in isPressing = false }
+                    .sequenced(before: DragGesture())
+                    .onChanged { value in
+                        switch value {
+                        case .second(true, let drag):
+                            dragOffset = drag?.translation ?? .zero
+                        default:
+                            break
+                        }
+                    }
+            )
+    }
+}
+```
+
+### UIKit/SwiftUI Scene Mixing (iOS 26+)
+
+**Documentation:** [Make your UIKit app more flexible - WWDC25](https://developer.apple.com/videos/play/wwdc2025/282/)
+
+Mix SwiftUI and UIKit scene types in a single app:
+
+```swift
+@main
+struct HybridApp: App {
+    var body: some Scene {
+        // SwiftUI window
+        WindowGroup {
+            ContentView()
+        }
+
+        // UIKit window
+        UIWindowScene { connectionOptions in
+            let window = UIWindow()
+            let viewController = LegacyViewController()
+            window.rootViewController = viewController
+            return window
+        }
+    }
+}
+
+// Or use SceneDelegate approach
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    var window: UIWindow?
+
+    func scene(
+        _ scene: UIScene,
+        willConnectTo session: UISceneSession,
+        options connectionOptions: UIScene.ConnectionOptions
+    ) {
+        guard let windowScene = scene as? UIWindowScene else { return }
+
+        // Mix SwiftUI and UIKit in same scene
+        let window = UIWindow(windowScene: windowScene)
+
+        if shouldUseSwiftUI(for: session) {
+            window.rootViewController = UIHostingController(
+                rootView: ContentView()
+            )
+        } else {
+            window.rootViewController = LegacyViewController()
+        }
+
+        self.window = window
+        window.makeKeyAndVisible()
+    }
+
+    private func shouldUseSwiftUI(for session: UISceneSession) -> Bool {
+        // Determine based on scene configuration
+        return session.configuration.name == "SwiftUI Scene"
+    }
+}
+```
+
+### DocumentGroupLaunchScene (iOS 18+)
+
+**Documentation:** [Evolve your document launch experience - WWDC24](https://developer.apple.com/videos/play/wwdc2024/10132/)
+
+New launch experience for document-based apps:
+
+```swift
+@main
+struct DocumentApp: App {
+    var body: some Scene {
+        DocumentGroupLaunchScene {
+            // Browser view when no document open
+            Text("Select or create a document")
+                .font(.title)
+        } editor: { configuration in
+            // Editor view for opened document
+            DocumentEditor(configuration: configuration)
+        } background: {
+            // Background content
+            Color(.systemBackground)
+        }
+    }
+}
+
+struct DocumentEditor: View {
+    let configuration: DocumentConfiguration<MyDocument>
+
+    var body: some View {
+        TextEditor(text: configuration.document.text)
+            .navigationTitle(configuration.fileURL?.lastPathComponent ?? "Untitled")
+    }
+}
+```
+
 ## Best Practices Summary
 
 1. **MVVM architecture**: Separate concerns clearly
