@@ -93,6 +93,63 @@ MyApp/
 - Use async/await for all async operations
 - Profile with Instruments regularly
 
+## Live Documentation Strategy (2.0)
+
+Apple updates its frameworks annually at WWDC. The reference files in this skill capture known-good patterns, but **always verify current API signatures and availability from Apple's live documentation** before generating code for:
+
+- Newly released frameworks (Foundation Models, Call Translation, BGContinuedProcessingTask)
+- Any `@available` version annotations
+- Specific initializer signatures, property names, or enum cases
+- Features the user describes as "latest", "new in iOS X", or from a WWDC session
+
+### When to Fetch Live Docs
+
+| Situation | Action |
+|-----------|--------|
+| User asks about Foundation Models, Translation, or BGContinuedProcessingTask | **Always** fetch the DocC JSON before writing code |
+| User asks "what's new in iOS 26/27" or mentions a WWDC session | Fetch WWDC session listing or release notes |
+| You are uncertain about an API name, initializer, or availability | Fetch the DocC JSON symbol page |
+| User asks about HIG rules for a specific component | Fetch the HIG component page |
+
+### Apple DocC JSON API
+
+Apple exposes machine-readable documentation at a consistent URL pattern:
+
+```
+https://developer.apple.com/tutorials/data/documentation/{framework}.json
+```
+
+**Individual symbol:**
+```
+https://developer.apple.com/tutorials/data/documentation/{framework}/{symbolname}.json
+```
+
+**Key framework endpoints:**
+
+| Framework | DocC JSON URL |
+|-----------|--------------|
+| SwiftUI | `https://developer.apple.com/tutorials/data/documentation/swiftui.json` |
+| Foundation Models | `https://developer.apple.com/tutorials/data/documentation/foundationmodels.json` |
+| Translation | `https://developer.apple.com/tutorials/data/documentation/translation.json` |
+| BackgroundTasks | `https://developer.apple.com/tutorials/data/documentation/backgroundtasks.json` |
+| Synchronization | `https://developer.apple.com/tutorials/data/documentation/synchronization.json` |
+| Swift Standard Library | `https://developer.apple.com/tutorials/data/documentation/swift.json` |
+| UIKit | `https://developer.apple.com/tutorials/data/documentation/uikit.json` |
+
+### Other Key Live Sources
+
+| Resource | URL |
+|----------|-----|
+| Human Interface Guidelines | `https://developer.apple.com/design/human-interface-guidelines/` |
+| iOS 26 Release Notes | `https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-26-release-notes` |
+| WWDC25 Sessions | `https://developer.apple.com/videos/wwdc2025/` |
+| Swift Book | `https://docs.swift.org/swift-book/documentation/the-swift-programming-language/` |
+| Swift Evolution | `https://www.swift.org/swift-evolution/` |
+
+### How to Use `read_url_content`
+
+When you need to verify an API before generating code, use `read_url_content` with the appropriate URL from the tables above. For new frameworks, prefer the DocC JSON endpoint as it provides structured, parseable API metadata including availability, initializers, properties, and relationships.
+
 ## Core Development Workflows
 
 ### Building a New View

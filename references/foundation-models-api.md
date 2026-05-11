@@ -1,5 +1,16 @@
 # Foundation Models Framework (iOS 26+)
 
+## Live Sources
+
+> **⚠️ This is a newly released framework — always verify API signatures from Apple's official docs before generating code:**
+> - **Foundation Models Docs**: `https://developer.apple.com/documentation/foundationmodels`
+> - **DocC JSON API**: `https://developer.apple.com/tutorials/data/documentation/foundationmodels.json`
+> - **WWDC25 — Explore the Foundation Models framework**: `https://developer.apple.com/videos/play/wwdc2025/286/`
+> - **WWDC25 — Deep dive into Foundation Models**: `https://developer.apple.com/videos/play/wwdc2025/321/`
+> - **iOS 26 Release Notes**: `https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-26-release-notes`
+>
+> **Always fetch the DocC JSON or documentation page before writing Foundation Models code** — the exact class names, initializers, and method signatures must be verified from the live source.
+
 **Available:** iOS 26.0+, iPadOS 26.0+, macOS Tahoe+
 **Documentation:** [iOS 26 Release Notes](https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-26-release-notes)
 

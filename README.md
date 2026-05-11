@@ -1,6 +1,8 @@
-# Swift Human Guidelines
+# Swift Human Guidelines 2.0
 
 A comprehensive Claude Code skill for building production-ready Swift 6 and SwiftUI applications across all Apple platforms, with full support for iOS 18, iOS 26, and Apple Intelligence features.
+
+**2.0 introduces a Live Documentation strategy** — Claude now fetches directly from `developer.apple.com` to verify API signatures and stay current with each WWDC cycle, rather than relying solely on static reference files.
 
 ## What This Skill Does
 
@@ -123,6 +125,34 @@ Platform-specific  →  Navigation, window management
 - **Typed Error Handling**: Swift 6 typed throws for better error management
 - **Lazy Loading**: LazyVStack/LazyHStack for large collections
 - **Apple Intelligence**: Foundation Models API for on-device and cloud AI
+
+## Live Documentation (2.0)
+
+### How It Works
+
+Each reference file now includes a **Live Sources** block at the top with canonical Apple documentation URLs. Claude uses these to:
+
+1. **Verify API signatures on demand** — uses `read_url_content` to fetch Apple's DocC JSON API before writing code for new or uncertain APIs
+2. **Stay current post-WWDC** — fetches WWDC session listings and release notes when the user asks about "latest" features
+3. **Catch speculative code** — newly released frameworks (Foundation Models, Call Translation) are flagged with ⚠️ and Claude is instructed to always fetch live docs before generating code for them
+
+### Apple DocC JSON API
+
+Apple exposes structured, machine-readable documentation at:
+```
+https://developer.apple.com/tutorials/data/documentation/{framework}.json
+https://developer.apple.com/tutorials/data/documentation/{framework}/{symbolname}.json
+```
+
+### Refresh Workflow
+
+To refresh all reference files from Apple's live documentation, run the Windsurf workflow:
+
+```
+/refresh-apple-docs
+```
+
+This walks through each reference file, fetches the latest from `developer.apple.com`, and updates the markdown with verified content. Run it after WWDC or any major Apple OS release.
 
 ## License
 

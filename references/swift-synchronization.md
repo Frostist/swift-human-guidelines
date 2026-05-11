@@ -1,5 +1,16 @@
 # Swift Synchronization Library (Swift 6.0+)
 
+## Live Sources
+
+> **For the most current Synchronization framework reference, fetch from Apple:**
+> - **Synchronization Docs**: `https://developer.apple.com/documentation/synchronization`
+> - **DocC JSON API**: `https://developer.apple.com/tutorials/data/documentation/synchronization.json`
+> - **Atomic**: `https://developer.apple.com/tutorials/data/documentation/synchronization/atomic.json`
+> - **Mutex**: `https://developer.apple.com/tutorials/data/documentation/synchronization/mutex.json`
+> - **Swift 6 Announcement**: `https://www.swift.org/blog/announcing-swift-6/`
+>
+> Fetch these URLs with `read_url_content` when the user asks about exact `Atomic` or `Mutex` initializers, memory ordering options, or `WordPair` atomic types.
+
 **Available:** Swift 6.0+
 **Documentation:** [Swift 6 Announcement](https://www.swift.org/blog/announcing-swift-6/)
 **Package:** `import Synchronization`

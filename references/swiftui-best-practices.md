@@ -1,5 +1,15 @@
 # SwiftUI Best Practices
 
+## Live Sources
+
+> **For the most current SwiftUI API reference, fetch from Apple:**
+> - **SwiftUI Documentation**: `https://developer.apple.com/documentation/swiftui`
+> - **DocC JSON API**: `https://developer.apple.com/tutorials/data/documentation/swiftui.json`
+> - **What's New in SwiftUI (WWDC25)**: `https://developer.apple.com/videos/play/wwdc2025/256/`
+> - **SwiftUI Updates**: `https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-26-release-notes`
+>
+> Fetch these URLs with `read_url_content` when the user asks about specific view modifiers, new navigation APIs, deprecated patterns, or iOS 26 SwiftUI additions.
+
 ## Table of Contents
 - [Architecture Patterns](#architecture-patterns)
 - [State Management](#state-management)

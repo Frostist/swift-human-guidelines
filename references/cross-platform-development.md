@@ -1,5 +1,16 @@
 # Cross-Platform Development with SwiftUI
 
+## Live Sources
+
+> **For the most current cross-platform development guidance, fetch from Apple:**
+> - **Creating a Multiplatform App**: `https://developer.apple.com/documentation/xcode/creating-a-multiplatform-app`
+> - **SwiftUI Multiplatform**: `https://developer.apple.com/tutorials/data/documentation/swiftui.json`
+> - **UIKit Catalyst**: `https://developer.apple.com/documentation/uikit/mac_catalyst`
+> - **WWDC25 — Build a SwiftUI app for iOS, iPadOS, and macOS**: `https://developer.apple.com/videos/play/wwdc2025/266/`
+> - **visionOS Development**: `https://developer.apple.com/documentation/visionos`
+>
+> Fetch these URLs with `read_url_content` when the user asks about platform-specific API availability, Mac Catalyst nuances, visionOS patterns, or new adaptive layout APIs.
+
 ## Table of Contents
 - [Platform Detection](#platform-detection)
 - [Conditional Compilation](#conditional-compilation)

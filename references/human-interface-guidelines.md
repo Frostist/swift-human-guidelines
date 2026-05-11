@@ -1,5 +1,16 @@
 # Apple Human Interface Guidelines
 
+## Live Sources
+
+> **For the most current guidelines, fetch directly from Apple:**
+> - **HIG Hub**: `https://developer.apple.com/design/human-interface-guidelines/`
+> - **Platforms Overview**: `https://developer.apple.com/design/human-interface-guidelines/platforms`
+> - **Components Reference**: `https://developer.apple.com/design/human-interface-guidelines/components`
+> - **Liquid Glass (WWDC25)**: `https://developer.apple.com/videos/play/wwdc2025/102/`
+> - **Design Resources**: `https://developer.apple.com/design/resources/`
+>
+> Fetch these URLs with `read_url_content` when the user asks about specific HIG rules, new platform conventions, or updated design system guidance.
+
 ## Core Principles
 
 ### Clarity

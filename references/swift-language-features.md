@@ -1,5 +1,17 @@
 # Swift Language Features and Best Practices
 
+## Live Sources
+
+> **For the most current Swift language reference, fetch from Apple:**
+> - **Swift Book**: `https://docs.swift.org/swift-book/documentation/the-swift-programming-language/`
+> - **Swift Evolution (accepted proposals)**: `https://www.swift.org/swift-evolution/`
+> - **Swift 6.2 Release Notes**: `https://www.swift.org/blog/swift-6.2-released/`
+> - **Swift Standard Library**: `https://developer.apple.com/documentation/swift`
+> - **DocC JSON API**: `https://developer.apple.com/tutorials/data/documentation/swift.json`
+> - **What's New in Swift (WWDC25)**: `https://developer.apple.com/videos/play/wwdc2025/269/`
+>
+> Fetch these URLs with `read_url_content` when the user asks about Swift evolution proposals, version-specific behaviour, typed throws semantics, or concurrency model changes.
+
 ## Table of Contents
 - [Modern Swift Syntax](#modern-swift-syntax)
 - [Concurrency](#concurrency)

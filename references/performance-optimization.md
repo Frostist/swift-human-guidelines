@@ -1,5 +1,16 @@
 # SwiftUI Performance Optimization
 
+## Live Sources
+
+> **For the most current performance guidance and Instruments documentation, fetch from Apple:**
+> - **Improving App Performance**: `https://developer.apple.com/documentation/xcode/improving-your-app-s-performance`
+> - **Instruments Documentation**: `https://developer.apple.com/documentation/instruments`
+> - **MetricKit**: `https://developer.apple.com/documentation/metrickit`
+> - **WWDC25 — Demystify SwiftUI performance**: `https://developer.apple.com/videos/play/wwdc2025/285/`
+> - **Xcode Organizer / Feedback**: `https://developer.apple.com/documentation/xcode/analyzing-the-performance-of-your-shipping-app`
+>
+> Fetch these URLs with `read_url_content` when the user asks about specific Instruments workflows, new profiling tools, or performance APIs introduced in recent OS versions.
+
 ## Table of Contents
 - [View Performance](#view-performance)
 - [State Management](#state-management)

@@ -1,5 +1,15 @@
 # Call Translation API (iOS 26+)
 
+## Live Sources
+
+> **⚠️ This is a newly released API — always verify from Apple's official docs before generating code:**
+> - **Translation Framework Docs**: `https://developer.apple.com/documentation/translation`
+> - **DocC JSON API**: `https://developer.apple.com/tutorials/data/documentation/translation.json`
+> - **WWDC25 — What's new in the Translation framework**: `https://developer.apple.com/videos/play/wwdc2025/313/`
+> - **iOS 26 What's New**: `https://developer.apple.com/ios/whats-new/`
+>
+> **Fetch the DocC JSON or documentation page before writing Translation/Call Translation code** — verify exact `TranslationSession` APIs, supported language pairs, and entitlement requirements from the live source.
+
 **Available:** iOS 26.0+, iPadOS 26.0+
 **Documentation:** [iOS 26 What's New](https://developer.apple.com/ios/whats-new/)
 **Framework:** Translation

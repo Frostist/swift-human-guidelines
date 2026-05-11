@@ -1,5 +1,16 @@
 # Background Processing in iOS 26
 
+## Live Sources
+
+> **For the most current BackgroundTasks framework reference, fetch from Apple:**
+> - **BackgroundTasks Docs**: `https://developer.apple.com/documentation/backgroundtasks`
+> - **BGContinuedProcessingTask**: `https://developer.apple.com/documentation/backgroundtasks/bgcontinuedprocessingtask`
+> - **DocC JSON API**: `https://developer.apple.com/tutorials/data/documentation/backgroundtasks.json`
+> - **WWDC25 — Finish tasks in the background**: `https://developer.apple.com/videos/play/wwdc2025/227/`
+> - **iOS 26 Release Notes**: `https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-26-release-notes`
+>
+> Fetch these URLs with `read_url_content` when the user asks about exact `BGContinuedProcessingTask` registration, execution limits, GPU access details, or expiration handling.
+
 **Available:** iOS 26.0+, iPadOS 26.0+
 **Documentation:** [Finish tasks in the background - WWDC25](https://developer.apple.com/videos/play/wwdc2025/227/)
 **Framework:** BackgroundTasks
